@@ -1,0 +1,22 @@
+# experiment.yml
+base-path: "/home"
+data-path: "/data"
+d4j:
+    path: "/defects4j-1.1.0/framework/"
+    junit: "projects/lib/junit-4.11.jar"
+    test-property: "tests.relevant" # alternative: "tests.all" and "tests.trigger"
+    loaded-classes: "projects/{}/loaded_classes/{}.src"
+    projects:
+        Chart: [1, 26]
+        Closure: [1, 133]
+        Lang: [1, 65]
+        Math: [1, 106]
+        Mockito: [1, 38]
+        Time: [1, 27]
+bootstrapper:
+    jar: "/data-sfl/bootstrapper/target/ddsfl-bootstrapper-0.1-SNAPSHOT.jar"
+    test-runner: "pt.up.fe.ddsfl.bootstrapper.Main"
+instrumenter:
+    agent: "/data-sfl/instrumenter/target/ddsfl-instrumenter-0.1-SNAPSHOT-with-dependencies.jar"
+    granularity: "basicblock"
+    options: "\"prefixesToFilter\":[\"ch.qos.logback\",\"org.slf4j\",\"junit\",\"org.junit\",\"org.hamcrest\"]"
