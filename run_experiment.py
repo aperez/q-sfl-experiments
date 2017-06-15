@@ -35,11 +35,7 @@ def run(project, version):
         bootsrapper = exp['bootstrapper']['jar']
         junit = exp['d4j']['path'] + exp['d4j']['junit']
         classpath = ":".join([bootsrapper, junit, f.readline().rstrip()])
-        agent_options = "".join(["{",
-            exp['instrumenter']['options'], ",",
-            '"granularityLevel":"',exp['instrumenter']['granularity'], '",',
-            '"filterClassNames":true',
-            "}"])
+        agent_options = "".join(["{", exp['instrumenter']['options'].replace(" ", ""), "}"])
         call("java -javaagent:{}={} -cp {} {} {} {}".format(
             exp['instrumenter']['agent'],
             agent_options,

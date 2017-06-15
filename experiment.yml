@@ -18,5 +18,8 @@ bootstrapper:
     test-runner: "pt.up.fe.ddsfl.bootstrapper.Main"
 instrumenter:
     agent: "/data-sfl/instrumenter/target/ddsfl-instrumenter-0.1-SNAPSHOT-with-dependencies.jar"
-    granularity: "basicblock"
-    options: "\"prefixesToFilter\":[\"ch.qos.logback\",\"org.slf4j\",\"junit\",\"org.junit\",\"org.hamcrest\"]"
+    options: >-
+        "granularityLevel":"basicblock",
+        "filterClassNames":true,
+        "instrumentParameters":true,
+        "prefixesToFilter":["ch.qos.logback","org.slf4j","junit","org.junit","org.hamcrest"]
