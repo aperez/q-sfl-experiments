@@ -15,7 +15,17 @@ def project_path(project, version, base=exp['base-path']):
     return "{}/{}/{}".format(base, project, version)
 
 def export(project, version):
-    return False
+    path = project_path(project, version)
+    os.chdir(path)
+
+    data_path = project_path(project, version, exp['data-path'])
+    call("mkdir -p {}".format(data_path))
+
+    #copy files
+    for f in ["nodes.txt", "probes.txt", "transactions.txt"]:
+        call("cp {} {}".format(f, data_path))
+
+    return True
 
 def run(project, version):
     path = project_path(project, version)
@@ -27,10 +37,12 @@ def run(project, version):
         classpath = ":".join([bootsrapper, junit, f.readline().rstrip()])
         agent_options = "".join(["{",
             exp['instrumenter']['options'], ",",
-            "granularityLevel=",exp['instrumenter']['granularity'],
+            '"granularityLevel":"',exp['instrumenter']['granularity'], '",',
+            '"filterClassNames":true',
             "}"])
-        call("java -javaagent:{} -cp {} {} {} {}".format(
+        call("java -javaagent:{}={} -cp {} {} {} {}".format(
             exp['instrumenter']['agent'],
+            agent_options,
             classpath,
             exp['bootstrapper']['test-runner'],
             exp['d4j']['test-property'] + ".txt",
