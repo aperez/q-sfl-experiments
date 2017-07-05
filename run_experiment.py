@@ -22,7 +22,7 @@ def export(project, version):
     call("mkdir -p {}".format(data_path))
 
     #copy files
-    for f in ["nodes.txt", "probes.txt", "transactions.txt"]:
+    for f in ["nodes.txt", "probes.txt", "transactions.txt", "valueprobes.txt"]:
         call("cp {} {}".format(f, data_path))
 
     return True
