@@ -22,4 +22,5 @@ instrumenter:
         "granularityLevel":"basicblock",
         "filterClassNames":true,
         "instrumentParameters":true,
+        "maxValueProbes":10000,
         "prefixesToFilter":["ch.qos.logback","org.slf4j","junit","org.junit","org.hamcrest"]
