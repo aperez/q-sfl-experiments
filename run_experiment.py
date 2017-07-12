@@ -7,9 +7,9 @@ import yaml
 
 exp = yaml.load(open("experiment.yml", 'r'))
 
-def call(command):
+def call(command, timeout=None):
     print(command)
-    subprocess.call(command.split(' '))
+    return subprocess.call(command.split(' '),timeout=timeout)
 
 def project_path(project, version, base=exp['base-path']):
     return "{}/{}/{}".format(base, project, version)
@@ -31,20 +31,24 @@ def run(project, version):
     path = project_path(project, version)
     os.chdir(path)
 
+    result = 1
     with open("cp.test.txt", 'r') as f:
         bootsrapper = exp['bootstrapper']['jar']
         junit = exp['d4j']['path'] + exp['d4j']['junit']
         classpath = ":".join([bootsrapper, junit, f.readline().rstrip()])
         agent_options = "".join(["{", exp['instrumenter']['options'].replace(" ", ""), "}"])
-        call("java -javaagent:{}={} -cp {} {} {} {}".format(
-            exp['instrumenter']['agent'],
-            agent_options,
-            classpath,
-            exp['bootstrapper']['test-runner'],
-            exp['d4j']['test-property'] + ".txt",
-            "loaded.classes.txt"))
-
-    return True
+        try:
+            result = call("java -javaagent:{}={} -cp {} {} {} {}".format(
+                          exp['instrumenter']['agent'],
+                          agent_options,
+                          classpath,
+                          exp['bootstrapper']['test-runner'],
+                          exp['d4j']['test-property'] + ".txt",
+                          "loaded.classes.txt"),
+                          timeout=exp['d4j']['timeout'])
+        except:
+            pass
+    return result == 0
 
 def checkout(project, version):
     path = project_path(project, version)
@@ -54,12 +58,12 @@ def checkout(project, version):
 
     os.chdir(path)
 
-    call("defects4j compile")
     for prop in ["cp.test", exp['d4j']['test-property']]:
         call("defects4j export -p {0} -o {0}.txt".format(prop))
 
     loaded_classes = exp['d4j']['path'] + exp['d4j']['loaded-classes'].format(project, version)
     call("cp {} loaded.classes.txt".format(loaded_classes))
+    call("defects4j compile")
 
     return True
 
