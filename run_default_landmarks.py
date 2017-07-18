@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-import json
+import ujson
 
 BASE_PATH="../results/data"
 TYPE_INFO={'o': ['null', 'not null'],\
@@ -37,7 +37,7 @@ def get_landmark_id(landmarks, valueprobe, last_id, landmarks_file):
         landmarks[node_id][index] = ret
         d = {'parentId': node_id, 'line': -1, 'type': 'LANDMARK',\
              'id': ret, 'name': TYPE_INFO[probe_type][index]}
-        landmark_str = json.dumps(d)
+        landmark_str = ujson.dumps(d)
         landmarks_file.write(landmark_str+'\n')
         #print(landmark_str)
     return ret
@@ -51,7 +51,7 @@ def create_thresholds(project, version):
     with open(nodes_path, 'r') as f:
         for line in f:
             line = line.rstrip()
-            d = json.loads(line)
+            d = ujson.loads(line)
             if 'id' in d and d['id'] > last_id:
                 last_id = d['id']
 
@@ -65,11 +65,16 @@ def create_thresholds(project, version):
             open(transactions_path, 'w') as t:
         for line in f:
             line = line.rstrip()
-            d = json.loads(line)
+            d = {}
+            try:
+                d = ujson.loads(line)
+            except:
+                continue
+
             if 'transactionName' in d:
                 d['landmarks'] = list(current_transaction)
                 current_transaction.clear()
-                t.write(json.dumps(d)+'\n')
+                t.write(ujson.dumps(d)+'\n')
             else:
                 landmark_id = get_landmark_id(landmarks, d, last_id, l)
                 current_transaction.add(landmark_id)
