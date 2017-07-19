@@ -2,8 +2,8 @@
 
 import sys
 import ujson
+from valueprobes_parser import *
 
-BASE_PATH="../results/data"
 TYPE_INFO={'o': ['null', 'not null'],\
            'i': ['i == 0', 'i > 0', 'i < 0'],\
            'S': ['S == 0', 'S > 0', 'S null'],\
@@ -13,9 +13,6 @@ TYPE_INFO={'o': ['null', 'not null'],\
            'f': ['f == 0', 'f > 0', 'f < 0'],\
            'd': ['d == 0', 'd > 0', 'd < 0'],\
            'z': ['false', 'true']}
-
-def project_path(project, version, base=BASE_PATH):
-    return "{}/{}/{}".format(base, project, version)
 
 def handle_value(value):
     if value == 0:
@@ -46,37 +43,21 @@ def create_thresholds(project, version):
     path = project_path(project, version)
     print(path)
 
-    nodes_path = path + "/nodes.txt"
-    last_id = 0
-    with open(nodes_path, 'r') as f:
-        for line in f:
-            line = line.rstrip()
-            d = ujson.loads(line)
-            if 'id' in d and d['id'] > last_id:
-                last_id = d['id']
-
-    valueprobes_path = path + "/valueprobes.txt"
     landmarks_path = path + "/landmarks.default.txt"
     transactions_path = path + "/transactions.default.txt"
 
+    last_id = get_last_node_id(path)
     landmarks = {}
     current_transaction = set()
-    with open(valueprobes_path, 'r') as f, open(landmarks_path, 'w') as l,\
-            open(transactions_path, 'w') as t:
-        for line in f:
-            line = line.rstrip()
-            d = {}
-            try:
-                d = ujson.loads(line)
-            except:
-                continue
 
-            if 'transactionName' in d:
-                d['landmarks'] = list(current_transaction)
+    with open(landmarks_path, 'w') as l, open(transactions_path, 'w') as t:
+        for valueprobe in iterate_valueprobes(path):
+            if 'transactionName' in valueprobe:
+                valueprobe['landmarks'] = list(current_transaction)
                 current_transaction.clear()
-                t.write(ujson.dumps(d)+'\n')
+                t.write(ujson.dumps(valueprobe)+'\n')
             else:
-                landmark_id = get_landmark_id(landmarks, d, last_id, l)
+                landmark_id = get_landmark_id(landmarks, valueprobe, last_id, l)
                 current_transaction.add(landmark_id)
                 if landmark_id > last_id:
                     last_id = landmark_id
