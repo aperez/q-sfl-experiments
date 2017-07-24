@@ -9,11 +9,13 @@ import sklearn.neighbors
 import sklearn.linear_model
 import sklearn.tree
 import sklearn.ensemble
+import pyclustering.cluster.xmeans
 
 from valueprobes_parser import *
 
 NODE_PER_TEST_THRESHOLD = 50
 RANDOM_SEED = 0
+DO_CLUSTERING = True
 
 def get_landmark_id(landmarks, node_id, prediction, current_id, landmarks_file, n=2):
     if node_id not in landmarks:
@@ -75,6 +77,7 @@ def create_thresholds(project, version):
                    ('logistic', sklearn.linear_model.LogisticRegression()),
                    ('tree', sklearn.tree.DecisionTreeClassifier()),
                    ('forest', sklearn.ensemble.RandomForestClassifier())]
+    #classifiers = []
 
     for classifier_name, classifier in classifiers:
         landmarks = {}
@@ -109,6 +112,45 @@ def create_thresholds(project, version):
                     pass
 
             #iterate current_tests, convert set to list, write to file t
+            for test in current_tests:
+                test['landmarks'] = list(test['landmarks'])
+                t.write(ujson.dumps(test)+'\n')
+
+    #clustering
+    if DO_CLUSTERING:
+        landmarks = {}
+        current_id = last_id
+        current_tests = copy.deepcopy(tests)
+        clusterer_name = 'xmeans'
+        landmarks_path = path + "/landmarks.{}.txt".format(clusterer_name)
+        transactions_path = path + "/transactions.{}.txt".format(clusterer_name)
+
+        with open(landmarks_path, 'w') as l, open(transactions_path, 'w') as t:
+            for node, value in all_values.items():
+                print("clustering node", node, "with", clusterer_name)
+                if len(value) < 5:
+                    continue
+
+                x = [v[0] for v in value] #value
+                try:
+                    x = numpy.array(x).reshape(-1, 1)
+                    centers = [x[0]]
+                    xm = pyclustering.cluster.xmeans.xmeans(x, centers, kmax=10)
+                    xm.process()
+                    clusters = xm.get_clusters()
+                    n = len(clusters)
+
+                    for prediction, itns in enumerate(clusters):
+                        for itn in itns:
+                            tn = value[itn][2]
+                            landmark_id = get_landmark_id(landmarks, node, prediction, current_id, l, n=n)
+                            if landmark_id > current_id:
+                                current_id = landmark_id
+                            #print(landmark_id, prediction)
+                            current_tests[tn]['landmarks'].add(landmark_id)
+                except:
+                    pass
+
             for test in current_tests:
                 test['landmarks'] = list(test['landmarks'])
                 t.write(ujson.dumps(test)+'\n')
