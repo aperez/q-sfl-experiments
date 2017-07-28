@@ -1,4 +1,4 @@
-.PHONY: run build sync run8 build8
+.PHONY: run build sync run8 build8 mvn-package
 
 CONTAINER=ddsfl
 CONTAINERJDK8=ddsfljdk8
@@ -13,6 +13,9 @@ build8: sync
 
 sync:
 	rsync -avzh  --exclude '.git' --exclude '**/target/' ${DDSFL} .
+
+mvn-package: sync
+	cd data-sfl && mvn package
 
 run:
 	docker run -it -v `pwd`/data:/data ${CONTAINER}
