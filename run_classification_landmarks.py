@@ -13,7 +13,7 @@ import pyclustering.cluster.xmeans
 
 from valueprobes_parser import *
 
-NODE_PER_TEST_THRESHOLD = 50
+NODE_PER_TEST_THRESHOLD = 100
 RANDOM_SEED = 0
 DO_CLUSTERING = True
 

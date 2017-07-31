@@ -1,7 +1,7 @@
 import sys
 import ujson
 
-BASE_PATH="../results/data"
+BASE_PATH="data"
 
 def project_path(project, version, base=BASE_PATH):
     return "{}/{}/{}".format(base, project, version)
