@@ -25,26 +25,21 @@ def reduce_prob(old, new):
     #return max(old,new)
     return old+new
 
-def run_diagnosis_criterion(path, nodes, probes, transactions, criterion=None):
+def run_diagnosis_criterion(path, nodes, probes, transactions):
     probes = copy.deepcopy(probes)
     transactions = copy.deepcopy(transactions)
 
-    matrix_path = path+"/matrix.txt"
-    staccato_path = path+"/staccato.txt"
-    barinel_path = path+"/barinel.txt"
-    diagnosis_path = path+"/diagnosis.txt"
+    matrix_path = path+"/matrix.all.txt"
+    staccato_path = path+"/staccato.all.txt"
+    barinel_path = path+"/barinel.all.txt"
+    diagnosis_path = path+"/diagnosis.all.txt"
 
-    landmarks = {}
-
-    if criterion:
-        matrix_path = path+"/matrix.{}.txt".format(criterion)
-        staccato_path = path+"/staccato.{}.txt".format(criterion)
-        barinel_path = path+"/barinel.{}.txt".format(criterion)
-        diagnosis_path = path+"/diagnosis.{}.txt".format(criterion)
-
+    for criterion in CRITERIA:
+        landmarks = {}
         landmarks_path = path+"/landmarks.{}.txt".format(criterion)
         landmarks_store = []
         parentid_counts = {}
+
         with open(landmarks_path) as l:
             for line in l:
                 line = line.rstrip()
@@ -54,7 +49,6 @@ def run_diagnosis_criterion(path, nodes, probes, transactions, criterion=None):
                 if parent_id not in parentid_counts:
                     parentid_counts[parent_id] = 0
                 parentid_counts[parent_id] += 1
-
         for obj in landmarks_store:
             if parentid_counts[obj['parentId']] > 1:
                 parent_id = nodes[obj['parentId']]
@@ -122,7 +116,6 @@ def run_diagnosis_criterion(path, nodes, probes, transactions, criterion=None):
                 else:
                     probs[n] = prob
 
-
     results = []
     for items in probs.items():
         results.append(items)
@@ -166,8 +159,6 @@ def run_diagnosis(project, version):
     #print(transactions)
 
     run_diagnosis_criterion(path, nodes, probes, transactions)
-    for criterion in CRITERIA:
-        run_diagnosis_criterion(path, nodes, probes, transactions, criterion)
 
 
 if __name__ == "__main__":
