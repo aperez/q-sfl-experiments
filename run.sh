@@ -8,5 +8,6 @@ for (( i=$start; i<=$max; i++ ))
 do
     echo "started $project $i" >> log.txt
     python3 scripts/main.py $project $i
+    docker rm $(docker ps -a -q)
     echo "finished $project $i" >> log.txt
 done
