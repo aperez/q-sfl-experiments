@@ -3,12 +3,12 @@
 import subprocess
 from valueprobes_parser import *
 
-FL_BASE_PATH="../fault-localization-data/analysis/pipeline-scripts/buggy-lines"
+FL_BASE_PATH="fault-localization-data/analysis/pipeline-scripts/buggy-lines"
 
-CP = "data-sfl/instrumenter/target/ddsfl-instrumenter-0.1-SNAPSHOT-with-dependencies.jar:"+\
-     "data-sfl/bootstrapper/target/ddsfl-bootstrapper-0.1-SNAPSHOT.jar"
+CP = "q-sfl/instrumenter/target/qsfl-instrumenter-0.1-SNAPSHOT-with-dependencies.jar:"+\
+     "q-sfl/bootstrapper/target/qsfl-bootstrapper-0.1-SNAPSHOT.jar"
 
-COMMAND = "pt.up.fe.ddsfl.bootstrapper.FaultLocation"
+COMMAND = "pt.up.fe.qsfl.bootstrapper.FaultLocation"
 
 def call(command, timeout=None):
     print(command)

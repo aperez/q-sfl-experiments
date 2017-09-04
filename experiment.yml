@@ -15,10 +15,10 @@ d4j:
         Time: [1, 27]
     timeout: 600
 bootstrapper:
-    jar: "/data-sfl/bootstrapper/target/ddsfl-bootstrapper-0.1-SNAPSHOT.jar"
-    test-runner: "pt.up.fe.ddsfl.bootstrapper.Main"
+    jar: "/q-sfl/bootstrapper/target/qsfl-bootstrapper-0.1-SNAPSHOT.jar"
+    test-runner: "pt.up.fe.qsfl.bootstrapper.Main"
 instrumenter:
-    agent: "/data-sfl/instrumenter/target/ddsfl-instrumenter-0.1-SNAPSHOT-with-dependencies.jar"
+    agent: "/q-sfl/instrumenter/target/qsfl-instrumenter-0.1-SNAPSHOT-with-dependencies.jar"
     options: >-
         "granularityLevel":"method",
         "filterClassNames":true,

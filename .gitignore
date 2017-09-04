@@ -1,5 +1,7 @@
 .DS_Store
 data/
-data-sfl/
+q-sfl/
+fault-localization-data/
 __pycache__/
 *.pyc
+log.txt

@@ -14,15 +14,15 @@ RUN \
 ENV PATH="/defects4j-1.1.0/framework/bin/:${PATH}"
 ENV TZ="America/Los_Angeles"
 
-COPY data-sfl/ /data-sfl/
+COPY q-sfl/ /q-sfl/
 RUN \
-    cd /data-sfl/ && \
+    cd /q-sfl/ && \
     mvn -q package
 
 RUN mkdir /data
 
 WORKDIR /home/
-COPY run_experiment.py /home/
+COPY scripts/run_experiment.py /home/
 COPY experiment.yml /home/
 
 CMD ["bash"]

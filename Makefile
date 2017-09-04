@@ -1,24 +1,24 @@
-.PHONY: run build sync run8 build8 mvn-package
+.PHONY: build build8 mvn-package
 
-CONTAINER=ddsfl
-CONTAINERJDK8=ddsfljdk8
+CONTAINER=qsfl
+CONTAINERJDK8=qsfljdk8
 DOCKERFILEJDK8=Dockerfile_jdk8
-DDSFL=`pwd`/../data-sfl
+QSFL=`pwd`/../data-sfl
+FLDATA=https://bitbucket.org/rjust/fault-localization-data.git
 
-build: sync
+all: build build8 q-sfl fault-localization-data mvn-package
+
+build: q-sfl
 	docker build -t ${CONTAINER} .
 
-build8: sync
+build8: q-sfl
 	docker build -f ${DOCKERFILEJDK8} -t ${CONTAINERJDK8} .
 
-sync:
-	rsync -avzh  --exclude '.git' --exclude '**/target/' ${DDSFL} .
+q-sfl:
+	git clone ${QSFL} q-sfl
 
-mvn-package: sync
-	cd data-sfl && mvn package
+fault-localization-data:
+	git clone ${FLDATA} fault-localization-data
 
-run:
-	docker run -it -v `pwd`/data:/data ${CONTAINER}
-
-run8:
-	docker run -it -v `pwd`/data:/data ${CONTAINERJDK8}
+mvn-package: q-sfl
+	cd q-sfl && mvn package

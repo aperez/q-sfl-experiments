@@ -41,7 +41,6 @@ def get_landmark_id(landmarks, valueprobe, last_id, landmarks_file):
 
 def create_thresholds(project, version):
     path = project_path(project, version)
-    print(path)
 
     landmarks_path = path + "/landmarks.default.txt"
     transactions_path = path + "/transactions.default.txt"
