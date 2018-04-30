@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import subprocess
 import ujson
 import copy
@@ -14,8 +15,12 @@ CRITERIA = ['default',
             'logistic',
             'xmeans']
 
-STACCATO = 'barinel/Staccato.macosx.x86_64'
-BARINEL = 'barinel/Barinel.macosx.x86_64'
+STACCATO = 'barinel/Staccato.linux.x86_64'
+BARINEL = 'barinel/Barinel.linux.x86_64'
+
+if sys.platform == "darwin":
+    STACCATO = 'barinel/Staccato.macosx.x86_64'
+    BARINEL = 'barinel/Barinel.macosx.x86_64'
 
 def call(command, timeout=None):
     print(command)
