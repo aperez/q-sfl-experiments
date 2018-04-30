@@ -1,7 +1,7 @@
 .DS_Store
-data/
 q-sfl/
 fault-localization-data/
 __pycache__/
 *.pyc
 log.txt
+env/
