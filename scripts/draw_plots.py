@@ -94,7 +94,7 @@ def do_line_plot(data):
     plt.grid(True, color='0.75')
 
     for cat, marker, c, label in [closure_ab, lang_ab, math_ab, chart_ab, time_ab, mockito_ab]:
-        plt.scatter([x[0] for x in cat], [x[1] for x in cat], c=c, lw=0.5,s=50, marker=marker, label=label, zorder=2)
+        plt.scatter([x[0] for x in cat], [x[1] for x in cat], c=c, lw=0.5,s=50, marker=marker, edgecolor="0", label=label, zorder=2)
 
     ax.set_yscale('symlog')
     ax.set_ylim([-200,1000])
@@ -104,8 +104,8 @@ def do_line_plot(data):
     plt.legend(scatterpoints=1,
                loc='lower right',
                fontsize="10")
-    ax.axvline(15.5, lw=0.25, color='red',ls='--', zorder=1)
-    ax.axvline(77.5, lw=0.25, color='green',ls='--', zorder=1)
+    ax.axvline(15.5, lw=1.5, color='red',ls='--', zorder=1)
+    ax.axvline(77.5, lw=1.5, color='green',ls='--', zorder=1)
     ax.axvspan(0, 15.5, alpha=0.11, color='red', zorder=0)
     ax.axvspan(77.5, len(ab)+2, alpha=0.11, color='green', zorder=0)
 
@@ -147,25 +147,22 @@ def do_plot(results, my_xticks, filename, xlabel='', ylabel='', title=''):
     # create plot
     fig, ax = plt.subplots()
     ax.set_axisbelow(True)
-    plt.grid(True, color='0.75')
+    ax.yaxis.grid(True, color="0.85")
 
     index = np.arange(n_groups)
     bar_width = 0.275
     opacity = 0.8
 
     rects1 = plt.bar(index, results_better, bar_width,
-                     color='0.45',  lw=1.2,
+                     color='0.35', lw=1, edgecolor="0",
                      label='$\Delta{}C_d$ < 0')
 
     rects2 = plt.bar(index + bar_width, results_same, bar_width,
-                     hatch='////', lw=1.2,
-                     color='0.65',
+                     color='0.65', lw=1, edgecolor="0",
                      label='$\Delta{}C_d$ = 0')
 
     rects3 = plt.bar(index + bar_width + bar_width, results_worse, bar_width,
-                     hatch='xxxx', lw=1.2,
-                     color='0.95',
-                     edgecolor='black',
+                     color='0.95', lw=1, edgecolor="0",
                      label='$\Delta{}C_d$ > 0')
 
     plt.xlabel(xlabel)
@@ -200,7 +197,7 @@ if __name__ == "__main__":
                count_against_base(data, FOREST_INDEX)
                ]
 
-    do_plot(results, ['Default','X-means', 'k-NN','Linear', 'Logistic', 'Tree', 'Forest'],
+    do_plot(results, ['Sign','X-means', 'k-NN','Linear', 'Logistic', 'Tree', 'Forest'],
             'per-strategy.pdf', xlabel='Strategies',ylabel='# Subjects',
             title='Effort vs Base: All Projects')
 
