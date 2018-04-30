@@ -3,7 +3,7 @@
 CONTAINER=qsfl
 CONTAINERJDK8=qsfljdk8
 DOCKERFILEJDK8=Dockerfile_jdk8
-QSFL=`pwd`/../data-sfl
+QSFL=https://github.com/aperez/q-sfl.git
 FLDATA=https://bitbucket.org/rjust/fault-localization-data.git
 
 all: build build8 q-sfl fault-localization-data mvn-package
